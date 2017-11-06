@@ -300,7 +300,6 @@ func TestAppStart(t *testing.T) {
 			wantExitCode: 0,
 			wantErr:      false,
 			preRun: func() {
-				os.Chdir("../..")
 				_, err := configuration.GetConfigInstance("main", "HJSON", "./conf/config.hjson")
 				if err != nil {
 					t.Errorf("AppStart() = error while preinit %v", err)
@@ -309,7 +308,6 @@ func TestAppStart(t *testing.T) {
 			postRun: func() {
 				time.Sleep(time.Millisecond * 200)
 				AppStop(false, nil)
-				os.Chdir("libraries/env")
 				_Env = ""
 			},
 		},
@@ -355,7 +353,6 @@ func TestAppStop(t *testing.T) {
 			wantErr:      false,
 			preRun: func() {
 				GetEnvironment(true, "test")
-				os.Chdir("../..")
 				_, err := configuration.GetConfigInstance("main", "HJSON", "./conf/config.hjson")
 				if err != nil {
 					t.Errorf("AppStart() = error while preinit %v", err)
@@ -365,7 +362,6 @@ func TestAppStop(t *testing.T) {
 			},
 			postRun: func() {
 				_Env = ""
-				os.Chdir("libraries/env")
 			},
 		},
 	}

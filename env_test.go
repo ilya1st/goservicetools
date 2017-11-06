@@ -6,6 +6,7 @@ import (
 	"os"
 	"path"
 	"reflect"
+	"runtime"
 	"strconv"
 	"sync"
 	"syscall"
@@ -15,6 +16,13 @@ import (
 	"github.com/ilya1st/configuration-go"
 )
 
+var basePackageDir string
+
+func init() { // cause all the tests need logs directory for testing
+	_, filename, _, _ := runtime.Caller(0)
+	basePackageDir = path.Dir(filename)
+	os.Chdir(basePackageDir)
+}
 func TestValidateEnv(t *testing.T) {
 	type args struct {
 		str string
@@ -223,7 +231,7 @@ func TestCleanupSighupHandlers(t *testing.T) {
 }
 
 func clenupLogs() {
-	files, err := ioutil.ReadDir("../../logs")
+	files, err := ioutil.ReadDir("./logs")
 	if err != nil {
 		return
 	}
@@ -270,7 +278,7 @@ func TestSetupLog(t *testing.T) {
 						output: "file",
 						// for file logs,console logs: plain|json, excepts syslog
 						format: "plain",
-						path: "../../logs/test.log",
+						path: "./logs/test.log",
 						rotate: { // right for output=="file"
 							rotate: true,
 							// rotate or reopen on ON SIGHUP (depends on files parameter below)
@@ -429,7 +437,7 @@ func TestSetupSighupRotationForLogs(t *testing.T) {
 						// for file logs,console logs: plain|json, excepts syslog
 						format: "plain",
 						// specialy make error
-						path: "../../logs/test.log",
+						path: "./logs/test.log",
 						rotate: { // right for output=="file"
 							rotate: true,
 							// rotate or reopen on ON SIGHUP (depends on files parameter below)
@@ -498,7 +506,7 @@ func TestGetSystemLogger(t *testing.T) {
 						// for file logs,console logs: plain|json, excepts syslog
 						format: "plain",
 						// specialy make error
-						path: "../../logs/test.log",
+						path: "./logs/test.log",
 						rotate: { // right for output=="file"
 							rotate: true,
 							// rotate or reopen on ON SIGHUP (depends on files parameter below)
@@ -565,7 +573,7 @@ func TestGetHTTPLogger(t *testing.T) {
 						// for file logs,console logs: plain|json, excepts syslog
 						format: "plain",
 						// specialy make error
-						path: "../../logs/test.log",
+						path: "./logs/test.log",
 						rotate: { // right for output=="file"
 							rotate: true,
 							// rotate or reopen on ON SIGHUP (depends on files parameter below)
@@ -669,7 +677,7 @@ func TestCheckLogConfig(t *testing.T) {
 					// for file logs,console logs: plain|json, excepts syslog
 					format: "plain",
 					// specialy make error
-					path: "../../logs/test.log",
+					path: "./logs/test.log",
 					rotate: { // right for output=="file"
 						rotate: true,
 						// rotate or reopen on ON SIGHUP (depends on files parameter below)
@@ -1091,14 +1099,6 @@ func TestSetupPidfile(t *testing.T) {
 		},
 	}
 
-	os.Chdir("../..")
-	defer func() {
-		err := os.Chdir("libraries/env")
-		if err != nil {
-			t.Errorf("CheckPidfileConfig() chdir back error: %v", err)
-			return
-		}
-	}()
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			// internal package variable
@@ -1168,7 +1168,7 @@ func TestCheckAppConfig(t *testing.T) {
 				config: func() configuration.IConfig {
 					// yes we assume all ok here
 
-					conf, err := configuration.GetConfigInstance("main", "HJSON", "../../conf/config.hjson")
+					conf, err := configuration.GetConfigInstance("main", "HJSON", "./conf/config.hjson")
 					if err != nil {
 						return nil
 					}
