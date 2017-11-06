@@ -80,8 +80,27 @@ func (*DefaultAppStartSetup) HandleSignal(sg os.Signal) error {
 func (*DefaultAppStartSetup) ConfigureHTTPServer(graceful bool) error {
 	newMux := http.NewServeMux()
 	newMux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		// TODO: http log sample there
+		w.WriteHeader(http.StatusOK)
 		fmt.Fprintf(w, "This is default server mux. See defaultAppStartSetup setting IAppStartSetup in appstart.go file. You can create you one. URI: %v", r.URL.Path)
+		// Get X-Forwarded-For from header
+		xfwdfor := r.Header.Get("X-Forwarded-for")
+		xrealip := r.Header.Get("X-Real-IP")
+		e := GetHTTPLogger().Info().
+			Str("ip", r.RemoteAddr)
+		if xfwdfor != "" {
+			e = e.Str("x-forwarded-for", xfwdfor)
+		}
+		if xrealip != "" {
+			e = e.Str("x-real-ip", xrealip)
+		}
+		e.
+			Str("method", r.Method).
+			Str("host", r.Host).
+			Str("url", r.URL.Path).
+			Str("agent", r.UserAgent()).
+			Str("referer", r.Referer()).
+			Int("code", http.StatusOK).
+			Msg("request")
 	})
 	// TODO: move new mux parameter to appstart
 	SetHTTPServeMux(newMux)

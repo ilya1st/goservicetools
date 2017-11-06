@@ -556,7 +556,8 @@ func TestGetHTTPLogger(t *testing.T) {
 	}{
 		{
 			name: "no http log configured",
-			want: false,
+			// yes, cause there would be fallback logger there
+			want: true,
 			preRun: func() {
 				DropLogger("http")
 			},

@@ -220,6 +220,7 @@ var (
 	// this is fallback logger to use if systemLogger is nil to error stdout
 	fallbackSystemLogger *zerolog.Logger
 	httpLogger           *zerolog.Logger
+	fallbackHTTPLogger   *zerolog.Logger
 )
 
 /*
@@ -509,6 +510,9 @@ func GetSystemLogger() *zerolog.Logger {
 func GetHTTPLogger() *zerolog.Logger {
 	loggerMutex.RLock()
 	defer loggerMutex.RUnlock()
+	if (httpLogger == nil) || reflect.ValueOf(httpLogger).IsNil() {
+		return fallbackHTTPLogger
+	}
 	return httpLogger
 }
 
@@ -911,4 +915,5 @@ func init() {
 	pidfilePath = ""
 	fl := zerolog.New(zerolog.ConsoleWriter{Out: os.Stderr, NoColor: true}).With().Timestamp().Logger()
 	fallbackSystemLogger = &fl
+	fallbackHTTPLogger = &fl
 }
