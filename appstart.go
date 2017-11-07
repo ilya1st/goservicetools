@@ -268,6 +268,7 @@ func AppStart(setup IAppStartSetup) (exitCode int, err error) {
 	}
 
 	GetSystemLogger().Info().Msg("Setting up http logs done")
+	appAppStartSetup.CheckUserConfig(conf)
 	GetSystemLogger().Info().Msg("Setting up http server. Prepare http listener")
 	// yes it must be there withous errors after config check
 	if appAppStartSetup.NeedHTTP() {

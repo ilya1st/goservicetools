@@ -2,6 +2,7 @@
 Here would be main program file located to work
 To run:
 ENV=dev go run simplestart.go
+Also it can do suid from lower ports
 */
 package main
 
@@ -13,6 +14,8 @@ import (
 )
 
 // CustomAppStart app start there
+// Look at goservicetools.DefaultAppStartSetup
+// understand on how to write applications
 type CustomAppStart struct {
 	goservicetools.DefaultAppStartSetup
 }
