@@ -1,0 +1,269 @@
+{
+    /*
+    Hello service configuration file
+    */
+    "prod":{
+        // to this dir application would chdir after check config
+        // workdir: "/basecms"
+
+        // lockfile settings
+        lockfile: {
+            lockfile: true,
+            file:"./logs/hello.lock"
+        },
+        // setup currend arr pidfile
+        // notice: app just stupidly rewrite(or try) this file.
+        // this is intended for init scripts tasks, etc.
+        // to control process running use lockfile
+        pidfile: {
+            // if pidfile enabled
+            pidfile: true,
+            file:"./logs/pidfile.pid"
+        },
+        // setuid section defines if up is going redefine user id and restart itself, transmitting 
+        // lower open ports sockets to self restarted instance
+        setuid: {
+            // true if setuid at startup enabled, false if not
+            setuid: false,
+            user: "brainstorm",
+            group: ""
+        },
+        logs: {
+            // system events log
+            system:{
+                // typos would be pluggable to make put there extra info
+                // may be stdout, stderr, syslog, file, null  - setup null if you want all to /dev/null
+                output: "file",
+                // for file logs,console logs: plain|json|console, excepts syslog
+                format: "plain",
+                path: "./logs/system.log",
+                /*
+                cause at first part we are not going use intenal scheduler module
+                (no have time for realization)
+                we will use options sighup: true, files:0
+                just make rotation only via lorgotate tool 
+                */
+                rotate: { // right for output=="file"
+                    // do we need rotation
+                    rotate: true,
+                    // rotate or reopen on ON SIGHUP (depends on files parameter below)
+                    // for not that's is the only options on how to rotate
+                    sighup: true,
+                    /* all below not SUPPORTED
+                    // number of files to rotate. 0 for just to reopen
+                    files: 5,
+                    // this for future features 
+                    // null, false, or string cron description
+                    cron: false,
+                    */
+                },
+            },
+            // http events log
+            http:{
+                // typos would be pluggable to make put there extra info
+                // may be stdout, stderr, syslog, file, null  - setup null if you want all to /dev/null
+                output: "file",
+                // for file logs,console logs: plain|json, excepts syslog
+                format: "plain",
+                path: "./logs/http.log",
+                rotate: { // right for output=="file"
+                    // do we need rotation
+                    rotate: true,
+                    // rotate or reopen on ON SIGHUP (depends on files parameter below)
+                    sighup: true,
+                },
+            },
+        },
+        // http parameters here
+        http: {
+            // timeout for shut down in milliseconds
+            shutdown_timeout: 2000,
+            ssl: { // section for future
+                ssl: false
+            },
+            http2: {//section for future
+                http2: false
+            },
+            // may be unix or tcp
+            socket_type: "tcp",
+            // host:port, ip:port
+            address: "localhost:100",
+            // domain name to work with
+            domain: "localhost",
+        },
+
+        // internal hello service config
+        hello:{
+            port: 3000,
+        },
+    },
+    // if empty than is's copy of prod
+    "dev":{
+        // to this dir application would chdir after check config
+        // workdir: "/basecms"
+
+        // lockfile settings
+        lockfile: {
+            // enabled or disabled to run
+            lockfile: true,
+            file:"./logs/hello.lock"
+        },
+        // setup currend arr pidfile
+        // notice: app just stupidly rewrite(or try) this file.
+        // this is intended for init scripts tasks, etc.
+        // to control process running use lockfile
+        pidfile: {
+            // if pidfile enabled
+            pidfile: true,
+            file:"./logs/pidfile.pid"
+        },
+        // setuid section defines if up is going redefine user id and restart itself, transmitting 
+        // lower open ports sockets to self restarted instance
+        setuid: {
+            // true if setuid at startup enabled, false if not
+            setuid: false,
+            user: "www-data",
+            group: "www-data"
+        },
+        logs: {
+            // system events log
+            system:{
+                // typos would be pluggable to make put there extra info
+                // may be stdout, stderr, syslog, file, null  - setup null if you want all to /dev/null
+                output: "stderr",
+                // for file logs,console logs: plain|json|console, excepts syslog
+                format: "plain",
+                path: "./logs/system.log",
+                rotate: { // right for output=="file"
+                    // do we need rotation
+                    rotate: true,
+                    // rotate or reopen on ON SIGHUP (depends on files parameter below)
+                    sighup: true,
+                },
+            },
+            // http events log
+            http:{
+                // typos would be pluggable to make put there extra info
+                // may be stdout, stderr, syslog, file, null  - setup null if you want all to /dev/null
+                output: "stderr",
+                // for file logs,console logs: plain|json, excepts syslog
+                format: "plain",
+                path: "./logs/http.log",
+                rotate: { // right for output=="file"
+                    // do we need rotation
+                    rotate: true,
+                    // rotate or reopen on ON SIGHUP (depends on files parameter below)
+                    sighup: true,
+                },
+            },
+        },
+        http: {
+            // timeout for shut down in milliseconds
+            shutdown_timeout: 2000,
+            ssl: { // section for future
+                ssl: true,
+                // certificat file
+                cert: "./conf/cert.pem"
+                // key file
+                key: "./conf/key.pem"
+            },
+            http2: {//section for future - unsupported
+                http2: false
+            },
+            // may be unix or tcp
+            socket_type: "tcp",
+            // host:port, ip:port
+            address: "localhost:8000",
+            // domain name to work with
+            domain: "localhost",
+        },
+        // internal hello service config
+        hello:{
+            port: 3000,
+        },
+    },
+    // if empty than is's copy of prod
+    "test":{
+        // to this dir application would chdir after check config
+        // workdir: "/basecms"
+
+        // lockfile settings
+        lockfile: {
+            lockfile: true,
+            file:"./logs/hello.lock"
+        },
+        // setup currend arr pidfile
+        // notice: app just stupidly rewrite(or try) this file.
+        // this is intended for init scripts tasks, etc.
+        // to control process running use lockfile
+        pidfile: {
+            // if pidfile enabled
+            pidfile: true,
+            file:"./logs/pidfile.pid"
+        },
+        // setuid section defines if up is going redefine user id and restart itself, transmitting 
+        // lower open ports sockets to self restarted instance
+        setuid: {
+            // true if setuid at startup enabled, false if not
+            setuid: false,
+            user: "www-data",
+            group: "www-data"
+        },
+        logs: {
+            // system events log
+            system:{
+                // typos would be pluggable to make put there extra info
+                // may be stdout, stderr, syslog, file, null  - setup null if you want all to /dev/null
+                output: "file",
+                // for file logs,console logs: plain|json, excepts syslog
+                format: "plain",
+                path: "./logs/system.log",
+                rotate: { // right for output=="file"
+                    // do we need rotation
+                    rotate: true,
+                    // rotate or reopen on ON SIGHUP (depends on files parameter below)
+                    sighup: true,
+                },
+            },
+            // http events log
+            http:{
+                // typos would be pluggable to make put there extra info
+                // may be stdout, stderr, syslog, file, null  - setup null if you want all to /dev/null
+                output: "file",
+                // for file logs,console logs: plain|json, excepts syslog
+                format: "plain",
+                path: "./logs/http.log",
+                rotate: { // right for output=="file"
+                    // do we need rotation
+                    rotate: true,
+                    // rotate or reopen on ON SIGHUP (depends on files parameter below)
+                    sighup: true,
+                },
+            },
+        },
+        http: {
+            // timeout for shut down in milliseconds
+            shutdown_timeout: 2000,
+            ssl: { // section for future
+                ssl: true,
+                // certificat file
+                cert: "./conf/cert.pem"
+                // key file
+                key: "./conf/key.pem"
+            },
+            http2: {//section for future
+                http2: false
+            },
+            // may be unix or tcp
+            socket_type: "tcp",
+            // host:port, ip:port
+            address: "localhost:8080",
+            // domain name to work with
+            domain: "localhost",
+        },
+        // internal hello service config
+        hello:{
+            port: 3000,
+        },
+    }
+}
