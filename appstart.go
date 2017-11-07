@@ -217,6 +217,10 @@ func AppStart(setup IAppStartSetup) (exitCode int, err error) {
 	if err != nil {
 		return ExitCodeConfigError, fmt.Errorf("Application configuration error: %v", err)
 	}
+	err = appAppStartSetup.CheckUserConfig(conf)
+	if err != nil {
+		return ExitCodeConfigError, fmt.Errorf("Application configuration error: %v", err)
+	}
 	if setuidConf != nil {
 		setuid, err := setuidConf.GetBooleanValue("setuid")
 		if err != nil {
@@ -268,7 +272,6 @@ func AppStart(setup IAppStartSetup) (exitCode int, err error) {
 	}
 
 	GetSystemLogger().Info().Msg("Setting up http logs done")
-	appAppStartSetup.CheckUserConfig(conf)
 	GetSystemLogger().Info().Msg("Setting up http server. Prepare http listener")
 	// yes it must be there withous errors after config check
 	if appAppStartSetup.NeedHTTP() {

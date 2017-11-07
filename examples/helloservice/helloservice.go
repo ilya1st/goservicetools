@@ -26,11 +26,12 @@ import (
 type CustomAppStart struct {
 	goservicetools.DefaultAppStartSetup
 	helloPort int
+	config    configuration.IConfig
 }
 
 // newCustromAppStart create default object version of app
 func newCustromAppStart() *CustomAppStart {
-	return &CustomAppStart{helloPort: -1}
+	return &CustomAppStart{helloPort: -1, config: nil}
 }
 
 // NeedHTTP implements IAppStartSetup.NeedHTTP() method
@@ -76,9 +77,11 @@ func (app *CustomAppStart) getHelloPort() int {
 }
 
 // CheckUserConfig checks user config parts
-func (*CustomAppStart) CheckUserConfig(mainconf configuration.IConfig) error {
-	fmt.Println(mainconf)
-	return nil
+func (app *CustomAppStart) CheckUserConfig(mainconf configuration.IConfig) error {
+	if app.config != nil {
+		return nil
+	}
+	return fmt.Errorf("CheckUserConfig(): not implemented now")
 }
 
 // SystemSetup implements IAppStartSetup.SystemSetup() method
