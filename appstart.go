@@ -20,6 +20,18 @@ import (
 // SystemSetup starts database connections and same other things
 
 // IAppStartSetup appstart setup for application
+// Methods at start are called at following order:
+// 1. CommandLineHook add command line reading
+// 2. CheckUserConfig add additional config tests
+// 3. SystemSetup - prepare own socket listeners etc
+// 3. ConfigureHTTPServer configure e.g. mux for http
+// 4. SystemStart - stat listen listeners, etc.
+// At SIGINT or SIGTERM are called:
+// 1. HandleSignal - to determine type of signal and handle them
+// 2. SystemShutdown - shutdown listenere
+// At SIGUSR1 - system does graceful restart and calls:
+// 1. SystemShutdown if there is graceful flag - do not close listeners - just shut down your services
+// 2. SetupOwnExtraFiles - setup them here to make restart app with open sockets
 type IAppStartSetup interface {
 	// NeedHTTP does app need http sevice or not
 	NeedHTTP() bool

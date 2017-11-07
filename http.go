@@ -45,7 +45,7 @@ func PrepareHTTPListener(graceful bool, httpConfig configuration.IConfig) error 
 	if graceful && (os.Getenv("GRACEFUL_HTTP_FD") != "") { // fd 0 stdin, 1 stdout, 2 stderr, 3 http
 		fd, err := strconv.ParseInt(os.Getenv("GRACEFUL_HTTP_FD"), 10, 32)
 		if err != nil {
-			err = fmt.Errorf("No variable GRACEFUL_HTTP_FD set for graceful start. Internal error: %v", err)
+			err = fmt.Errorf("PrepareHTTPListener: No variable GRACEFUL_HTTP_FD set for graceful start. Internal error: %v", err)
 			if l == nil {
 				panic(err)
 			} else {

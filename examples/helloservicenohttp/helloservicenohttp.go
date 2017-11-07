@@ -1,10 +1,11 @@
 /*
 Here would be main program file located to work
 To run:
-ENV=dev go run helloservice.go
+ENV=dev go run helloservicenohttp.go
 Also it can do suid from lower ports
-We listen on default HTTP port and answer hello there and open specific
 config with special section for our miniservice
+
+This is example for case when http subservice is disabled - see NeedHTTP() method of application object
 */
 package main
 
@@ -12,7 +13,6 @@ import (
 	"flag"
 	"fmt"
 	"net"
-	"net/http"
 	"os"
 	"os/exec"
 	"strconv"
@@ -40,7 +40,7 @@ func newHelloApp() *helloApp {
 
 // NeedHTTP implements IAppStartSetup.NeedHTTP() method
 func (*helloApp) NeedHTTP() bool {
-	return true
+	return false
 }
 
 // CommandLineHook implements IAppStartSetup.CommandLineHook() method
@@ -95,9 +95,9 @@ func (app *helloApp) SystemSetup(graceful bool) error {
 	}
 	goservicetools.GetSystemLogger().Info().Msgf("Found configured port value %d", helloPort)
 	if graceful && (os.Getenv("GRACEFUL_HELLO_FD") != "") {
-		fd, err := strconv.ParseInt(os.Getenv("GRACEFUL_HTTP_FD"), 10, 32)
+		fd, err := strconv.ParseInt(os.Getenv("GRACEFUL_HELLO_FD"), 10, 32)
 		if err != nil {
-			err = fmt.Errorf("No variable GRACEFUL_HTTP_FD set for graceful start. Internal error: %v", err)
+			err = fmt.Errorf("No variable GRACEFUL_HELLO_FD set for graceful start. Internal error: %v", err)
 			goservicetools.GetSystemLogger().Panic().Msg(err.Error())
 		}
 		file := os.NewFile(uintptr(fd), "[hellosocket]")
@@ -169,42 +169,6 @@ func (app *helloApp) getHelloPort() int {
 func (*helloApp) HandleSignal(sg os.Signal) error {
 	// DO NOTHING CAUSE DO NOT NEED HANDLE ANYTHING
 	goservicetools.GetSystemLogger().Info().Msgf("Caught signal: %v", sg)
-	return nil
-}
-
-// ConfigureHTTPServer implements IAppStartSetup.ConfigureHTTPServer() method
-func (*helloApp) ConfigureHTTPServer(graceful bool) error {
-	newMux := http.NewServeMux()
-	newMux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		fmt.Fprintf(w, "Hello!")
-		// Get X-Forwarded-For from header
-		xfwdfor := r.Header.Get("X-Forwarded-for")
-		xrealip := r.Header.Get("X-Real-IP")
-		e := goservicetools.GetHTTPLogger().Info().
-			Str("ip", r.RemoteAddr)
-		if xfwdfor != "" {
-			e = e.Str("x-forwarded-for", xfwdfor)
-		}
-		if xrealip != "" {
-			e = e.Str("x-real-ip", xrealip)
-		}
-		e = e.
-			Str("method", r.Method).
-			Str("host", r.Host).
-			Str("url", r.URL.Path).
-			Str("agent", r.UserAgent()).
-			Str("referer", r.Referer()).
-			Int("code", http.StatusOK)
-		e.
-			Msg("request")
-	})
-	// TODO: move new mux parameter to appstart
-	goservicetools.SetHTTPServeMux(newMux)
-	l := goservicetools.GetSystemLogger()
-	if l != nil {
-		l.Info().Msg("Default http server set up")
-	}
 	return nil
 }
 

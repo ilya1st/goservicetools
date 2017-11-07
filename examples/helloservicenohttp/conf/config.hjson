@@ -17,7 +17,7 @@
         // to control process running use lockfile
         pidfile: {
             // if pidfile enabled
-            pidfile: true,
+            pidfile: false,
             file:"./logs/pidfile.pid"
         },
         // setuid section defines if up is going redefine user id and restart itself, transmitting 
@@ -114,7 +114,7 @@
         // to control process running use lockfile
         pidfile: {
             // if pidfile enabled
-            pidfile: true,
+            pidfile: false,
             file:"./logs/pidfile.pid"
         },
         // setuid section defines if up is going redefine user id and restart itself, transmitting 
@@ -198,7 +198,7 @@
         // to control process running use lockfile
         pidfile: {
             // if pidfile enabled
-            pidfile: true,
+            pidfile: false,
             file:"./logs/pidfile.pid"
         },
         // setuid section defines if up is going redefine user id and restart itself, transmitting 

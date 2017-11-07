@@ -40,11 +40,13 @@ func newHelloApp() *helloApp {
 
 // NeedHTTP implements IAppStartSetup.NeedHTTP() method
 func (*helloApp) NeedHTTP() bool {
+	goservicetools.GetSystemLogger().Debug().Msg("NeedHTTP called")
 	return true
 }
 
 // CommandLineHook implements IAppStartSetup.CommandLineHook() method
 func (app *helloApp) CommandLineHook(cmdFlags map[string]string) {
+	goservicetools.GetSystemLogger().Debug().Msg("CommandLineHook called")
 	// redefine here hello port argument
 	var helloport = ""
 	flag.StringVar(&helloport, "helloport", "", "override configuration hello port")
@@ -62,6 +64,7 @@ func (app *helloApp) CommandLineHook(cmdFlags map[string]string) {
 
 // CheckUserConfig checks user config parts
 func (app *helloApp) CheckUserConfig(mainconf configuration.IConfig) error {
+	goservicetools.GetSystemLogger().Debug().Msg("CheckUserConfig called")
 	app.rMutex.Lock()
 	defer app.rMutex.Unlock()
 	port, err := mainconf.GetIntValue("hello", "port")
@@ -77,6 +80,7 @@ func (app *helloApp) CheckUserConfig(mainconf configuration.IConfig) error {
 // SystemSetup implements IAppStartSetup.SystemSetup() method
 // here we open socket, setup listener(from graceful etc)
 func (app *helloApp) SystemSetup(graceful bool) error {
+	goservicetools.GetSystemLogger().Debug().Msg("SystemSetup called")
 	conf, err := configuration.GetConfigInstance("main")
 	if err != nil {
 		panic(fmt.Errorf("getHelloPort() config error %v", err))
@@ -95,9 +99,9 @@ func (app *helloApp) SystemSetup(graceful bool) error {
 	}
 	goservicetools.GetSystemLogger().Info().Msgf("Found configured port value %d", helloPort)
 	if graceful && (os.Getenv("GRACEFUL_HELLO_FD") != "") {
-		fd, err := strconv.ParseInt(os.Getenv("GRACEFUL_HTTP_FD"), 10, 32)
+		fd, err := strconv.ParseInt(os.Getenv("GRACEFUL_HELLO_FD"), 10, 32)
 		if err != nil {
-			err = fmt.Errorf("No variable GRACEFUL_HTTP_FD set for graceful start. Internal error: %v", err)
+			err = fmt.Errorf("No variable GRACEFUL_HELLO_FD set for graceful start. Internal error: %v", err)
 			goservicetools.GetSystemLogger().Panic().Msg(err.Error())
 		}
 		file := os.NewFile(uintptr(fd), "[hellosocket]")
@@ -167,6 +171,7 @@ func (app *helloApp) getHelloPort() int {
 
 // HandleSignal handles signal from OS
 func (*helloApp) HandleSignal(sg os.Signal) error {
+	goservicetools.GetSystemLogger().Debug().Msg("HandleSignal called")
 	// DO NOTHING CAUSE DO NOT NEED HANDLE ANYTHING
 	goservicetools.GetSystemLogger().Info().Msgf("Caught signal: %v", sg)
 	return nil
@@ -174,6 +179,7 @@ func (*helloApp) HandleSignal(sg os.Signal) error {
 
 // ConfigureHTTPServer implements IAppStartSetup.ConfigureHTTPServer() method
 func (*helloApp) ConfigureHTTPServer(graceful bool) error {
+	goservicetools.GetSystemLogger().Debug().Msg("ConfigureHTTPServer called")
 	newMux := http.NewServeMux()
 	newMux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
@@ -215,6 +221,7 @@ func (app *helloApp) handleHello(conn net.Conn) {
 
 // SystemStart start custom services with prepared listeners in SystemSetup
 func (app *helloApp) SystemStart(graceful bool) error {
+	goservicetools.GetSystemLogger().Debug().Msg("SystemStart called")
 	app.rMutex.RLock()
 	l := app.listener
 	app.rMutex.RUnlock()
@@ -241,6 +248,8 @@ func (app *helloApp) SystemStart(graceful bool) error {
 
 // SystemShutdown implements IAppStartSetup.SystemShutdown
 func (app *helloApp) SystemShutdown(graceful bool) error {
+	goservicetools.GetSystemLogger().Debug().Msg("SystemShutdown called")
+
 	if !graceful {
 		app.listener.Close()
 	}
@@ -250,6 +259,7 @@ func (app *helloApp) SystemShutdown(graceful bool) error {
 // SetupOwnExtraFiles for graceful restart
 // and setup some environment variables for them
 func (app *helloApp) SetupOwnExtraFiles(cmd *exec.Cmd, newConfig configuration.IConfig) error {
+	goservicetools.GetSystemLogger().Debug().Msg("SetupOwnExtraFiles called")
 	/*
 		place here something like that:
 		cmd.ExtraFiles =
