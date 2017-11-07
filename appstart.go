@@ -217,7 +217,12 @@ func AppStart(setup IAppStartSetup) (exitCode int, err error) {
 	if err != nil {
 		return ExitCodeConfigError, fmt.Errorf("Application configuration error: %v", err)
 	}
-	err = appAppStartSetup.CheckUserConfig(conf)
+	mainconf, err := conf.GetSubconfig(_env)
+	if err != nil {
+		return ExitCodeConfigError, fmt.Errorf("Application configuration error: %v", err)
+	}
+	// here we transmit working part of config.
+	err = appAppStartSetup.CheckUserConfig(mainconf)
 	if err != nil {
 		return ExitCodeConfigError, fmt.Errorf("Application configuration error: %v", err)
 	}

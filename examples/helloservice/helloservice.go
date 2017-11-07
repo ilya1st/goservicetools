@@ -15,6 +15,7 @@ import (
 	"os"
 	"os/exec"
 	"strconv"
+	"sync"
 
 	configuration "github.com/ilya1st/configuration-go"
 	"github.com/ilya1st/goservicetools"
@@ -27,6 +28,7 @@ type CustomAppStart struct {
 	goservicetools.DefaultAppStartSetup
 	helloPort int
 	config    configuration.IConfig
+	rMutex    sync.RWMutex
 }
 
 // newCustromAppStart create default object version of app
@@ -40,7 +42,7 @@ func (*CustomAppStart) NeedHTTP() bool {
 }
 
 // CommandLineHook implements IAppStartSetup.CommandLineHook() method
-func (*CustomAppStart) CommandLineHook(cmdFlags map[string]string) {
+func (app *CustomAppStart) CommandLineHook(cmdFlags map[string]string) {
 	// redefine here hello port argument
 	var helloport = ""
 	flag.StringVar(&helloport, "helloport", "", "override configuration hello port")
@@ -56,9 +58,31 @@ func (*CustomAppStart) CommandLineHook(cmdFlags map[string]string) {
 	cmdFlags["helloport"] = helloport
 }
 
+// CheckUserConfig checks user config parts
+func (app *CustomAppStart) CheckUserConfig(mainconf configuration.IConfig) error {
+	app.rMutex.Lock()
+	defer app.rMutex.Unlock()
+
+	if app.config != nil {
+		return nil
+	}
+	fmt.Println(mainconf)
+	port, err := mainconf.GetIntValue("hello", "port")
+	if err != nil {
+		return fmt.Errorf("Parsing hello service section of configuration error %v", err)
+	}
+	if port < 0 {
+		return fmt.Errorf("Port value can not be negative")
+	}
+	app.config = mainconf
+	return nil
+}
+
 // getHelloPort check cmdFlags value and internal config
 // this is example on how to use internal app config
 func (app *CustomAppStart) getHelloPort() int {
+	app.rMutex.Lock()
+	defer app.rMutex.Unlock()
 	if app.helloPort >= 0 {
 		return app.helloPort
 	}
@@ -73,15 +97,15 @@ func (app *CustomAppStart) getHelloPort() int {
 		app.helloPort = int(tmp)
 		return app.helloPort
 	}
-	panic("Error: no helloport defined in config file or arguments")
-}
-
-// CheckUserConfig checks user config parts
-func (app *CustomAppStart) CheckUserConfig(mainconf configuration.IConfig) error {
-	if app.config != nil {
-		return nil
+	if app.config == nil {
+		panic("No app config inside app to obtain default hello port")
 	}
-	return fmt.Errorf("CheckUserConfig(): not implemented now")
+	helloPort, err := app.config.GetIntValue("hello", "port")
+	if err != nil {
+		panic(fmt.Errorf("Error: no hello/port defined in config file or arguments: %v", err))
+	}
+	app.helloPort = helloPort
+	return app.helloPort
 }
 
 // SystemSetup implements IAppStartSetup.SystemSetup() method

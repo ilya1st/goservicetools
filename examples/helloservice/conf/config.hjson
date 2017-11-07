@@ -1,6 +1,6 @@
 {
     /*
-    Configuration file contains variations for different environments
+    Hello service configuration file
     */
     "prod":{
         // to this dir application would chdir after check config
@@ -91,6 +91,11 @@
             // domain name to work with
             domain: "localhost",
         },
+
+        // internal hello service config
+        hello:{
+            port: 3000,
+        },
     },
     // if empty than is's copy of prod
     "dev":{
@@ -172,6 +177,10 @@
             // domain name to work with
             domain: "localhost",
         },
+        // internal hello service config
+        hello:{
+            port: 3000,
+        },
     },
     // if empty than is's copy of prod
     "test":{
@@ -251,6 +260,10 @@
             address: "localhost:8080",
             // domain name to work with
             domain: "localhost",
+        },
+        // internal hello service config
+        hello:{
+            port: 3000,
         },
     }
 }
