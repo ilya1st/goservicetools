@@ -27,8 +27,12 @@ type IAppStartSetup interface {
 	CommandLineHook(cmdFlags map[string]string)
 	// checks user config parts
 	CheckUserConfig(mainconf configuration.IConfig) error
-	// SystemSetup setup other suid ports here
+	// SystemSetup setup other suid ports here, sockets, etc
 	SystemSetup(graceful bool) error
+	// SetupOwnExtraFiles for graceful restart - transfer suid ports to graceful child
+	// for made System setup when suid or graceful restart
+	//  newConfig is full new app config to compare settings
+	SetupOwnExtraFiles(cmd *exec.Cmd, newConfig configuration.IConfig) error
 	// HandleSignal handles signal from OS
 	HandleSignal(sg os.Signal) error
 	// Set up custom http mux, log, etc
@@ -37,8 +41,6 @@ type IAppStartSetup interface {
 	SystemStart(graceful bool) error
 	// Run on app shutdown
 	SystemShutdown(graceful bool) error
-	// SetupOwnExtraFiles for graceful restart - transfer suid ports to graceful child
-	SetupOwnExtraFiles(cmd *exec.Cmd) error
 }
 
 // DefaultAppStartSetup implements IAppStartSetup
@@ -122,7 +124,7 @@ func (*DefaultAppStartSetup) SystemShutdown(graceful bool) error {
 }
 
 // SetupOwnExtraFiles for graceful restart
-func (*DefaultAppStartSetup) SetupOwnExtraFiles(cmd *exec.Cmd) error {
+func (*DefaultAppStartSetup) SetupOwnExtraFiles(cmd *exec.Cmd, newConfig configuration.IConfig) error {
 	/*
 		place here something like that:
 		cmd.ExtraFiles =
@@ -234,7 +236,7 @@ func AppStart(setup IAppStartSetup) (exitCode int, err error) {
 		if setuid && !graceful { // run all things and graceful stop
 			err = appAppStartSetup.SystemSetup(false)
 			if err != nil {
-				return ExitUserDefinedCodeError, fmt.Errorf(`Error occured while setting up HTTP Listener. Error: %v\nExiting`, err)
+				return ExitUserDefinedCodeError, fmt.Errorf(`Error occured while setting up custom app listeners. look appAppStartSetup.SystemSetup(). Error: %v\nExiting`, err)
 			}
 			if appAppStartSetup.NeedHTTP() {
 				httpConf, _ := conf.GetSubconfig(_env, "http")
@@ -273,11 +275,8 @@ func AppStart(setup IAppStartSetup) (exitCode int, err error) {
 	err = appAppStartSetup.SystemSetup(graceful)
 
 	if err != nil {
-		return ExitUserDefinedCodeError, fmt.Errorf(`Error make system inititalization %v`, err)
+		return ExitUserDefinedCodeError, fmt.Errorf(`Error make system inititalization while appAppStartSetup.SystemSetup running: %v`, err)
 	}
-
-	GetSystemLogger().Info().Msg("Setting up http logs done")
-	GetSystemLogger().Info().Msg("Setting up http server. Prepare http listener")
 	// yes it must be there withous errors after config check
 	if appAppStartSetup.NeedHTTP() {
 		GetSystemLogger().Info().Msg("Setting up http logs")
@@ -315,6 +314,8 @@ var appStopMutex sync.Mutex
 // to new process
 // if graceful==true then function tries make graceful restart
 // function makes app restart and also makes it's suid start
+// NOTICE: if set suid and graceful restart and lower ports are used we assume than you do not change port numbers
+// cause we do not have root controller process to supervise lower ports openings
 func AppStop(graceful bool, sd *SetuidData) (exitCode int, err error) {
 	appStopMutex.Lock()
 	defer appStopMutex.Unlock()
@@ -339,6 +340,15 @@ func AppStop(graceful bool, sd *SetuidData) (exitCode int, err error) {
 		err = CheckAppConfig(newConfig)
 		if err != nil {
 			GetSystemLogger().Fatal().Msgf("Can not restart. Application config file contains errors: %v", err)
+		}
+		mainconf, err := newConfig.GetSubconfig(_env)
+		if err != nil {
+			return ExitCodeConfigError, fmt.Errorf("Application configuration error: %v", err)
+		}
+		// here we transmit working part of config.
+		err = appAppStartSetup.CheckUserConfig(mainconf)
+		if err != nil {
+			return ExitCodeConfigError, fmt.Errorf("Application configuration error: %v", err)
 		}
 		// WHAT IS THE RIGHT WAy HERE?
 	}
@@ -449,7 +459,7 @@ func AppStop(graceful bool, sd *SetuidData) (exitCode int, err error) {
 				},
 			}
 		}
-		err := appAppStartSetup.SetupOwnExtraFiles(cmd)
+		err := appAppStartSetup.SetupOwnExtraFiles(cmd, newConfig)
 		if err != nil {
 			if l == nil {
 				panic(fmt.Errorf("custom appstart error: %v", err))
@@ -488,7 +498,6 @@ goloop:
 		}
 		switch sg {
 		case syscall.SIGINT:
-			fmt.Println("SIGInt")
 			fallthrough
 		case syscall.SIGTERM:
 			appAppStartSetup.HandleSignal(sg)

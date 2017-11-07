@@ -9,7 +9,7 @@
         // lockfile settings
         lockfile: {
             lockfile: true,
-            file:"./logs/basecms.lock"
+            file:"./logs/hello.lock"
         },
         // setup currend arr pidfile
         // notice: app just stupidly rewrite(or try) this file.
@@ -106,7 +106,7 @@
         lockfile: {
             // enabled or disabled to run
             lockfile: true,
-            file:"./logs/basecms.lock"
+            file:"./logs/hello.lock"
         },
         // setup currend arr pidfile
         // notice: app just stupidly rewrite(or try) this file.
@@ -190,7 +190,7 @@
         // lockfile settings
         lockfile: {
             lockfile: true,
-            file:"./logs/basecms.lock"
+            file:"./logs/hello.lock"
         },
         // setup currend arr pidfile
         // notice: app just stupidly rewrite(or try) this file.
