@@ -75,3 +75,7 @@ You can add own options there, e.g. number of ports user want to listen. See hel
 ## Graceful port reopening
 
 See AppStop() internals to understand on how does that works and helloservice example where gracefully  restarted does not need open socket to listen - it gives file descriptor from previous instance.
+
+### Limitations for graceful restart
+
+For correct application restart when setuid enabled in configuration and used lower ports - you may not to change ports numbers in configuration file between restarts
