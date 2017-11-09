@@ -58,6 +58,7 @@ There is examples directory you can see on how to work with library components
 * github.com/rs/zerolog for logging
 * github.com/ilya1st/rotatewriter to support log rotate on SIGHUP, 
 * github.com/ilya1st/configuration-go to support HJSON(json with not strict syntax) to work with configuration files
+* github.com/theckman/go-flock for lock file
 
 ## Application configuration file
 
