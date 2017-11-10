@@ -287,9 +287,9 @@ func AppStart(setup IAppStartSetup) (exitCode int, err error) {
 	err = appAppStartSetup.SystemSetup(graceful)
 
 	if err != nil {
-		return ExitUserDefinedCodeError, fmt.Errorf(`Error make system inititalization while appAppStartSetup.SystemSetup running: %v`, err)
+		return ExitUserDefinedCodeError, fmt.Errorf(`Error make system initialization while appAppStartSetup.SystemSetup running: %v`, err)
 	}
-	// yes it must be there withous errors after config check
+	// yes it must be there without errors after config check
 	if appAppStartSetup.NeedHTTP() {
 		GetSystemLogger().Info().Msg("Setting up http logs")
 		httpLogConf, _ := conf.GetSubconfig(_env, "logs", "http") // no err check above cause of we use err = CheckAppConfig(conf)
