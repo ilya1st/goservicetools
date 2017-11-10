@@ -217,7 +217,7 @@ func (app *helloApp) SetupOwnExtraFiles(cmd *exec.Cmd, newConfig configuration.I
 	/*
 		place here something like that:
 		cmd.ExtraFiles =
-			files = append(cmd.ExtraFiles, <file from you listrner)
+			files = append(cmd.ExtraFiles, <file from you listener>)
 			cmd.Env = append(cmd.Env, fmt.Sprintf("GRACEFUL_YOUR_SERVICE_FD=%d", 2+len(cmd.ExtraFiles)))
 	*/
 	if app.listener == nil {
@@ -225,7 +225,7 @@ func (app *helloApp) SetupOwnExtraFiles(cmd *exec.Cmd, newConfig configuration.I
 	}
 	_env, err := goservicetools.GetEnvironment()
 	if err != nil {
-		goservicetools.GetSystemLogger().Fatal().Msgf("SetupOwnExtraFiles: error while getting current envirnment: %v", err)
+		goservicetools.GetSystemLogger().Fatal().Msgf("SetupOwnExtraFiles: error while getting current environment: %v", err)
 	}
 	newPort, err := newConfig.GetIntValue(_env, "hello", "port")
 	if err != nil {

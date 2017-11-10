@@ -132,7 +132,7 @@ func TestGetEnvironment(t *testing.T) {
 			},
 		},
 		{
-			name:    "second run without args, variable teoretically set by previous run",
+			name:    "second run without args, variable theoretically set by previous run",
 			args:    args{sl: []interface{}{}},
 			wantEnv: "prod",
 			wantErr: false,
@@ -189,12 +189,12 @@ func TestAddSighupHandler(t *testing.T) {
 		l1 := len(sighupHandlers)
 		AddSighupHandler(sighandler)
 		if l1 == len(sighupHandlers) {
-			t.Errorf("AddSighupHandler() wrong behaviour with internal structure. Handler was not added")
+			t.Errorf("AddSighupHandler() wrong behavior with internal structure. Handler was not added")
 		}
 		handlerCalled = false
 		sighupHandlers[l1]()
 		if !handlerCalled {
-			t.Errorf("AddSighupHandler() wrong behaviour with internal structure. Handler was not added")
+			t.Errorf("AddSighupHandler() wrong behavior with internal structure. Handler was not added")
 		}
 		// cleanup
 		sighupHandlers = make([]func(), 0, 10)
@@ -230,7 +230,7 @@ func TestCleanupSighupHandlers(t *testing.T) {
 	})
 }
 
-func clenupLogs() {
+func cleanupLogs() {
 	files, err := ioutil.ReadDir("./logs")
 	if err != nil {
 		return
@@ -292,7 +292,7 @@ func TestSetupLog(t *testing.T) {
 			wantErr:    false,
 			cleanUp: func() {
 				DropLogger("system")
-				clenupLogs()
+				cleanupLogs()
 			},
 		},
 		{
@@ -321,7 +321,7 @@ func TestSetupLog(t *testing.T) {
 			wantErr:    true,
 			cleanUp: func() {
 				DropLogger("system")
-				clenupLogs()
+				cleanupLogs()
 			},
 		},
 	}
@@ -333,7 +333,7 @@ func TestSetupLog(t *testing.T) {
 				return
 			}
 			if tt.wantLogger && (gotLogger == nil) {
-				t.Errorf("SetupLog() no logger was returned wwhile no error retrieved")
+				t.Errorf("SetupLog() no logger was returned while no error retrieved")
 			}
 			if nil != tt.cleanUp {
 				tt.cleanUp()
@@ -367,7 +367,7 @@ func TestGetLogger(t *testing.T) {
 			},
 			cleanUp: func() {
 				DropLogger("system")
-				clenupLogs()
+				cleanupLogs()
 			},
 		},
 	}
@@ -474,7 +474,7 @@ func TestSetupSighupRotationForLogs(t *testing.T) {
 				tt.cleanUp()
 			}
 			CleanupSighupHandlers()
-			clenupLogs()
+			cleanupLogs()
 		})
 	}
 }
@@ -542,7 +542,7 @@ func TestGetSystemLogger(t *testing.T) {
 			if tt.postRun != nil {
 				tt.postRun()
 			}
-			clenupLogs()
+			cleanupLogs()
 		})
 	}
 }
@@ -610,7 +610,7 @@ func TestGetHTTPLogger(t *testing.T) {
 			if tt.postRun != nil {
 				tt.postRun()
 			}
-			clenupLogs()
+			cleanupLogs()
 		})
 	}
 }
@@ -1123,7 +1123,7 @@ func TestDropPidfile(t *testing.T) {
 	tests := []struct {
 		name string
 	}{
-		{name: "Just stupdi run to check no panics, etc"},
+		{name: "Just stupid run to check no panics, etc"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

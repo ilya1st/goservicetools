@@ -336,7 +336,7 @@ func SetupLog(tag string, config configuration.IConfig) (logger *zerolog.Logger,
 	case "":
 		logFormat = "plain"
 	default:
-		return nil, fmt.Errorf("Frong log formet in configuration file: %v", logFormat)
+		return nil, fmt.Errorf("Wrong log format in configuration file: %v", logFormat)
 	}
 	var writer io.Writer
 	// to prevent type casting there
@@ -351,7 +351,7 @@ func SetupLog(tag string, config configuration.IConfig) (logger *zerolog.Logger,
 		writer = os.Stderr
 	case "syslog":
 		// TODO add tag there, host, etc
-		syslogwriter, err := syslog.New(syslog.LOG_LOCAL0, "basecms_tag")
+		syslogwriter, err := syslog.New(syslog.LOG_LOCAL0, "")
 		if nil != err {
 			return nil, fmt.Errorf("Error while adding syslog")
 		}
@@ -806,7 +806,7 @@ func DropPidfile() {
 	}
 }
 
-// CheckAppConfig checks whole cofiguration file like their initialization order and returns error if something is wrong
+// CheckAppConfig checks whole configuration file like their initialization order and returns error if something is wrong
 // NOTE: Environment must be initialized before start this function
 // this function is intended to configtest commandline argument and for application startup
 func CheckAppConfig(config configuration.IConfig) error {
@@ -829,7 +829,7 @@ func CheckAppConfig(config configuration.IConfig) error {
 	}
 	err = CheckLockFileConfig(lockfileconfig)
 	if err != nil {
-		return fmt.Errorf("Configuration error: lockfile configuraton error occurred: %v", err)
+		return fmt.Errorf("Configuration error: lockfile configuration error occurred: %v", err)
 	}
 	pidfileConfig, err := config.GetSubconfig(_env, "pidfile")
 	if err != nil {
@@ -846,7 +846,7 @@ func CheckAppConfig(config configuration.IConfig) error {
 	}
 	err = CheckPidfileConfig(pidfileConfig)
 	if err != nil {
-		return fmt.Errorf("Configuration error: pidfile configuraton error occurred: %v", err)
+		return fmt.Errorf("Configuration error: pidfile configuration error occurred: %v", err)
 	}
 	// setuid log check
 	setuidConfig, err := config.GetSubconfig(_env, "setuid")
@@ -887,7 +887,6 @@ func CheckAppConfig(config configuration.IConfig) error {
 	if err != nil {
 		return fmt.Errorf("Configuration error: http configuration error: %v", err)
 	}
-	// TODO: same with htaccess
 	return nil
 }
 

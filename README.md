@@ -7,11 +7,11 @@ Framework to make service from your application(with different log types, http, 
 
 ## Overview
 
-This pacakage was written for case you need write own unix service in golang.
+This package was written for case you need write own unix service in golang.
 For example. I want my application to have following things:
 
- 1. Application must have own configuration file and tools to read them. And must work at least in 3 enviromnents defined by ENV variable or command line option(prod, dev, test)
- 1. Application must be able write own log files and support at least 2 formats(plain and json) an 4 outputs(stderr, file, syslog, and no outout) with syslog like facilities.
+ 1. Application must have own configuration file and tools to read them. And must work at least in 3 environments defined by ENV variable or command line option(prod, dev, test)
+ 1. Application must be able write own log files and support at least 2 formats(plain and json) an 4 outputs(stderr, file, syslog, and no output) with syslog like facilities.
  1. Application must be able work as daemon:
     1. Support SIGINT, SIGTERM
     1. Support work with logrotate and reopen logs on SIGHUP signal.
@@ -47,7 +47,7 @@ func main() {
     fmt.Println("Just open https://localhost:8000 when ready")
     exitCode, err := goservicetools.AppStart(&CustomAppStart{})
     if err != nil {
-        fmt.Fprintf(os.Stderr, "Error occured while starting app\n%v\n", err)
+        fmt.Fprintf(os.Stderr, "Error occurred while starting app\n%v\n", err)
         os.Exit(exitCode)
     }
     goservicetools.AppRun()

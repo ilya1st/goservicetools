@@ -670,7 +670,7 @@ func TestSetHTTPServeMux(t *testing.T) {
 		postRun   func()
 		wantPanic bool
 	}{
-		{name: "noserver case", args: args{mux: newMux}, wantPanic: true},
+		{name: "no server case", args: args{mux: newMux}, wantPanic: true},
 		{
 			name:      "about full start",
 			args:      args{mux: newMux},
@@ -710,7 +710,7 @@ func TestSetHTTPServeMux(t *testing.T) {
 			defer func() {
 				r := recover()
 				if r != nil && !tt.wantPanic {
-					t.Errorf("SetHTTPServeMux() unexpectable panic occurred: %v", err)
+					t.Errorf("SetHTTPServeMux() unexpected panic occurred: %v", err)
 				}
 			}()
 			if tt.preRun != nil {
@@ -867,7 +867,7 @@ func TestStartHTTPServer(t *testing.T) {
 			defer func() {
 				r := recover()
 				if r != nil && !tt.wantPanic {
-					t.Errorf("StartHTTPServer() unexpectable panic occurred: %v", err)
+					t.Errorf("StartHTTPServer() unexpected panic occurred: %v", err)
 				}
 			}()
 			if tt.preRun != nil {

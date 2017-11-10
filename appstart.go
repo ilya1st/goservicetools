@@ -140,7 +140,7 @@ func (*DefaultAppStartSetup) SetupOwnExtraFiles(cmd *exec.Cmd, newConfig configu
 	/*
 		place here something like that:
 		cmd.ExtraFiles =
-			files = append(cmd.ExtraFiles, <file from you listrner)
+			files = append(cmd.ExtraFiles, <file from you listener>)
 			cmd.Env = append(cmd.Env, fmt.Sprintf("GRACEFUL_YOUR_SERVICE_FD=%d", 2+len(cmd.ExtraFiles)))
 	*/
 	return nil
@@ -496,7 +496,7 @@ var appRunChan chan os.Signal
 var appRunMutex sync.Mutex
 
 // AppRun just to run app when we all do
-// here is no way cover with tests cause need manually test them or make intagration tests there
+// here is no way cover with tests cause need manually test them or make integration tests there
 func AppRun() {
 	appRunChan = make(chan os.Signal, 1)
 	signal.Notify(appRunChan, syscall.SIGINT, syscall.SIGTERM, syscall.SIGUSR1)
