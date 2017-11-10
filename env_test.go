@@ -33,12 +33,12 @@ func TestValidateEnv(t *testing.T) {
 		wantErr bool
 	}
 	tests := []teststruct{
-		teststruct{
+		{
 			name:    "failure test",
 			args:    args{str: "fuckup fuckup fuckup"},
 			wantErr: true,
 		},
-		teststruct{
+		{
 			name:    "normal prod value",
 			args:    args{str: "prod"},
 			wantErr: false,
@@ -65,7 +65,7 @@ func TestGetEnvironment(t *testing.T) {
 		preStartCode func()
 	}
 	tests := []teststruct{
-		teststruct{
+		{
 			name:    "first run with empty args and no enb",
 			args:    args{sl: []interface{}{}},
 			wantEnv: "",
@@ -75,7 +75,7 @@ func TestGetEnvironment(t *testing.T) {
 				os.Setenv("ENV", "")
 			},
 		},
-		teststruct{
+		{
 			name:    "first run with wrong env variable",
 			args:    args{sl: []interface{}{}},
 			wantEnv: "",
@@ -85,7 +85,7 @@ func TestGetEnvironment(t *testing.T) {
 				os.Setenv("ENV", "fuckup")
 			},
 		},
-		teststruct{
+		{
 			name:    "first run with right env variable",
 			args:    args{sl: []interface{}{}},
 			wantEnv: "prod",
@@ -95,7 +95,7 @@ func TestGetEnvironment(t *testing.T) {
 				os.Setenv("ENV", "prod")
 			},
 		},
-		teststruct{
+		{
 			name:    "first run with wrong first argument type",
 			args:    args{sl: []interface{}{""}},
 			wantEnv: "",
@@ -104,7 +104,7 @@ func TestGetEnvironment(t *testing.T) {
 				_Env = ""
 			},
 		},
-		teststruct{
+		{
 			name:    "first run with wrong second argument type",
 			args:    args{sl: []interface{}{true, false}},
 			wantEnv: "",
@@ -113,7 +113,7 @@ func TestGetEnvironment(t *testing.T) {
 				_Env = ""
 			},
 		},
-		teststruct{
+		{
 			name:    "first run: right args, wrong env ",
 			args:    args{sl: []interface{}{true, "fuck"}},
 			wantEnv: "",
@@ -122,7 +122,7 @@ func TestGetEnvironment(t *testing.T) {
 				_Env = ""
 			},
 		},
-		teststruct{
+		{
 			name:    "first run, right args, right env",
 			args:    args{sl: []interface{}{true, "prod"}},
 			wantEnv: "prod",
@@ -131,7 +131,7 @@ func TestGetEnvironment(t *testing.T) {
 				_Env = ""
 			},
 		},
-		teststruct{
+		{
 			name:    "second run without args, variable teoretically set by previous run",
 			args:    args{sl: []interface{}{}},
 			wantEnv: "prod",
