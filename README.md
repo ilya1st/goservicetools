@@ -1,5 +1,8 @@
 # goservicetools - library to write services on go
 
+[![Build Status](https://travis-ci.org/ilya1st/goservicetools.svg?branch=master)](https://travis-ci.org/ilya1st/goservicetools)
+
+
 Framework to make service from your application(with different log types, http, suid, graceful restart)
 
 ## Overview
