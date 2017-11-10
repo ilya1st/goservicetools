@@ -274,7 +274,13 @@ func TestDefaultAppStartSetup_SetupOwnExtraFiles(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			d := &DefaultAppStartSetup{}
-			if err := d.SetupOwnExtraFiles(tt.args.cmd); (err != nil) != tt.wantErr {
+			// here just empty config enough
+			cnf, err := configuration.NewHJSONConfig([]byte("{}"))
+			if err != nil {
+				t.Errorf("DefaultAppStartSetup.SetupOwnExtraFiles() test prepare error: %v", err)
+				return
+			}
+			if err := d.SetupOwnExtraFiles(tt.args.cmd, cnf); (err != nil) != tt.wantErr {
 				t.Errorf("DefaultAppStartSetup.SetupOwnExtraFiles() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
