@@ -33,7 +33,7 @@ import (
 // 1. SystemShutdown if there is graceful flag - do not close listeners - just shut down your services
 // 2. SetupOwnExtraFiles - setup them here to make restart app with open sockets
 type IAppStartSetup interface {
-	// NeedHTTP does app need http sevice or not
+	// NeedHTTP does app need http service or not
 	NeedHTTP() bool
 	// CommandLineHookadds additional command line flags to global cmdFlags structure
 	CommandLineHook(cmdFlags map[string]string)
@@ -152,7 +152,7 @@ var (
 )
 
 // AppStart app start function
-// if graceful - then to app transmited http socket in fd 3 https in fd 4 etc.
+// if graceful - then to app transmitted http socket in fd 3 https in fd 4 etc.
 func AppStart(setup IAppStartSetup) (exitCode int, err error) {
 	// setuid will be also graceful
 	graceful := os.Getenv("GRACEFUL_START") == "YES"
@@ -192,7 +192,7 @@ func AppStart(setup IAppStartSetup) (exitCode int, err error) {
 	// here goes app startup at all. TODO: think AppStartup and AppDown functions
 	_, err = configuration.GetConfigInstance("main", "HJSON", _config)
 	if err != nil {
-		return ExitCodeConfigError, fmt.Errorf("Error occured while loading configuration.\nConfig file: %s\nError: %s\nExiting", _config, err)
+		return ExitCodeConfigError, fmt.Errorf("Error occurred while loading configuration.\nConfig file: %s\nError: %s\nExiting", _config, err)
 	}
 	conf, err := configuration.GetConfigInstance("main")
 	if err != nil {
@@ -248,14 +248,14 @@ func AppStart(setup IAppStartSetup) (exitCode int, err error) {
 		if setuid && !graceful { // run all things and graceful stop
 			err = appAppStartSetup.SystemSetup(false)
 			if err != nil {
-				return ExitUserDefinedCodeError, fmt.Errorf(`Error occured while setting up custom app listeners. look appAppStartSetup.SystemSetup(). Error: %v\nExiting`, err)
+				return ExitUserDefinedCodeError, fmt.Errorf(`Error occurred while setting up custom app listeners. look appAppStartSetup.SystemSetup(). Error: %v\nExiting`, err)
 			}
 			if appAppStartSetup.NeedHTTP() {
 				httpConf, _ := conf.GetSubconfig(_env, "http")
 				err = PrepareHTTPListener(false, httpConf)
 			}
 			if err != nil {
-				return ExitHTTPStartError, fmt.Errorf(`Error occured while setting up HTTP Listener. Error: %v\nExiting`, err)
+				return ExitHTTPStartError, fmt.Errorf(`Error occurred while setting up HTTP Listener. Error: %v\nExiting`, err)
 			}
 			sd, err := GetSetUIDGIDData(setuidConf)
 			if err != nil {
@@ -278,7 +278,7 @@ func AppStart(setup IAppStartSetup) (exitCode int, err error) {
 	systemLogConf, _ := conf.GetSubconfig(_env, "logs", "system") // no err check above cause of we use err = CheckAppConfig(conf)
 	_, err = SetupLog("system", systemLogConf)
 	if err != nil {
-		return ExitCodeConfigError, fmt.Errorf(`Error occured while loading configuration.
+		return ExitCodeConfigError, fmt.Errorf(`Error occurred while loading configuration.
 			Cannot setup system log file.
 			Error: %v\nExiting`, err)
 	}
@@ -295,14 +295,14 @@ func AppStart(setup IAppStartSetup) (exitCode int, err error) {
 		httpLogConf, _ := conf.GetSubconfig(_env, "logs", "http") // no err check above cause of we use err = CheckAppConfig(conf)
 		_, err = SetupLog("http", httpLogConf)
 		if err != nil {
-			return ExitCodeConfigError, fmt.Errorf(`Error occured while loading configuration.
+			return ExitCodeConfigError, fmt.Errorf(`Error occurred while loading configuration.
 				Cannot setup http log file.
 				Error: %v\nExiting`, err)
 		}
 		httpConf, _ := conf.GetSubconfig(_env, "http")
 		err = PrepareHTTPListener(graceful, httpConf)
 		if err != nil {
-			return ExitHTTPStartError, fmt.Errorf(`Error occured while setting up HTTP Listener. Error: %v\nExiting`, err)
+			return ExitHTTPStartError, fmt.Errorf(`Error occurred while setting up HTTP Listener. Error: %v\nExiting`, err)
 		}
 		addr, _ := httpConf.GetStringValue("address")
 		GetSystemLogger().Info().Msgf("Http listener ready. address: %v. Setting up HTTP server itself", addr)
@@ -314,7 +314,7 @@ func AppStart(setup IAppStartSetup) (exitCode int, err error) {
 	// starting other than default HTTP custom services
 	err = appAppStartSetup.SystemStart(graceful)
 	if err != nil {
-		return ExitCustomAppError, fmt.Errorf(`Error occured while starting custom services. Error: %v\nExiting`, err)
+		return ExitCustomAppError, fmt.Errorf(`Error occurred while starting custom services. Error: %v\nExiting`, err)
 	}
 	return 0, nil
 }
@@ -386,9 +386,9 @@ func AppStop(graceful bool, sd *SetuidData) (exitCode int, err error) {
 	err = appAppStartSetup.SystemShutdown(graceful)
 	if err != nil {
 		if l == nil {
-			panic(fmt.Errorf("Error during system shutdown occured: %v", err))
+			panic(fmt.Errorf("Error during system shutdown occurred: %v", err))
 		}
-		l.Fatal().Msgf("Error during system shutdown occured: %v", err)
+		l.Fatal().Msgf("Error during system shutdown occurred: %v", err)
 	}
 	DropLogger("http")
 	if !graceful {
@@ -515,14 +515,14 @@ goloop:
 			appAppStartSetup.HandleSignal(sg)
 			exitCode, err := AppStop(false, nil)
 			if err != nil {
-				fmt.Fprintf(os.Stderr, "Error while app shutdown occured: %v", err)
+				fmt.Fprintf(os.Stderr, "Error while app shutdown occurred: %v", err)
 			}
 			Exit(exitCode)
 		case syscall.SIGUSR1:
 			appAppStartSetup.HandleSignal(sg)
 			exitCode, err := AppStop(true, nil)
 			if err != nil {
-				fmt.Fprintf(os.Stderr, "Error while app shutdown occured: %v", err)
+				fmt.Fprintf(os.Stderr, "Error while app shutdown occurred: %v", err)
 				Exit(exitCode)
 			}
 			Exit(exitCode)

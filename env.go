@@ -320,7 +320,7 @@ func SetupLog(tag string, config configuration.IConfig) (logger *zerolog.Logger,
 			},
 		}`))
 		if nil != err {
-			return nil, fmt.Errorf("Internal error while config creation occured: %v", err)
+			return nil, fmt.Errorf("Internal error while config creation occurred: %v", err)
 		}
 	}
 	output, err := conf.GetStringValue("output")
@@ -405,7 +405,7 @@ func SetupLog(tag string, config configuration.IConfig) (logger *zerolog.Logger,
 			l := zerolog.New(writer).With().Timestamp().Logger()
 			logger = &l
 		default:
-			return nil, fmt.Errorf("Internal error while config creation occured. No log format defined")
+			return nil, fmt.Errorf("Internal error while config creation occurred. No log format defined")
 		}
 	case "syslog":
 		if levelWriter == nil || reflect.ValueOf(levelWriter).IsNil() {
@@ -780,7 +780,7 @@ func SetupPidfile(pidfileConfig configuration.IConfig) error {
 	s := strconv.Itoa(pid)
 	err = ioutil.WriteFile(file, []byte(s), 0644)
 	if err != nil {
-		return fmt.Errorf("Error while writing pidfile occured: %v", err)
+		return fmt.Errorf("Error while writing pidfile occurred: %v", err)
 	}
 	pidMutex.Lock()
 	defer pidMutex.Unlock()
@@ -829,7 +829,7 @@ func CheckAppConfig(config configuration.IConfig) error {
 	}
 	err = CheckLockFileConfig(lockfileconfig)
 	if err != nil {
-		return fmt.Errorf("Configuration error: lockfile configuraton error occured: %v", err)
+		return fmt.Errorf("Configuration error: lockfile configuraton error occurred: %v", err)
 	}
 	pidfileConfig, err := config.GetSubconfig(_env, "pidfile")
 	if err != nil {
@@ -846,7 +846,7 @@ func CheckAppConfig(config configuration.IConfig) error {
 	}
 	err = CheckPidfileConfig(pidfileConfig)
 	if err != nil {
-		return fmt.Errorf("Configuration error: pidfile configuraton error occured: %v", err)
+		return fmt.Errorf("Configuration error: pidfile configuraton error occurred: %v", err)
 	}
 	// setuid log check
 	setuidConfig, err := config.GetSubconfig(_env, "setuid")

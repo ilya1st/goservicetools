@@ -261,7 +261,7 @@ func main() {
 	fmt.Println("Just open https://localhost:8000 when ready")
 	exitCode, err := goservicetools.AppStart(newHelloApp())
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error occured while starting app\n%v\n", err)
+		fmt.Fprintf(os.Stderr, "Error occurred while starting app\n%v\n", err)
 		os.Exit(exitCode)
 	}
 	goservicetools.AppRun()

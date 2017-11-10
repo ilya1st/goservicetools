@@ -255,7 +255,7 @@ func TestGetHTTPListener(t *testing.T) {
 			defer func() {
 				r := recover()
 				if r != nil {
-					t.Errorf("GetHTTPListener() panic error occured: %v", r)
+					t.Errorf("GetHTTPListener() panic error occurred: %v", r)
 				}
 				DropLogger("system")
 				DropHTTPListener()
@@ -285,7 +285,7 @@ func TestDropHTTPListener(t *testing.T) {
 			defer func() {
 				r := recover()
 				if r != nil {
-					t.Errorf("DropHTTPListener() panic error occured: %v", r)
+					t.Errorf("DropHTTPListener() panic error occurred: %v", r)
 				}
 			}()
 			DropHTTPListener()
@@ -710,7 +710,7 @@ func TestSetHTTPServeMux(t *testing.T) {
 			defer func() {
 				r := recover()
 				if r != nil && !tt.wantPanic {
-					t.Errorf("SetHTTPServeMux() unexpectable panic occured: %v", err)
+					t.Errorf("SetHTTPServeMux() unexpectable panic occurred: %v", err)
 				}
 			}()
 			if tt.preRun != nil {
@@ -867,7 +867,7 @@ func TestStartHTTPServer(t *testing.T) {
 			defer func() {
 				r := recover()
 				if r != nil && !tt.wantPanic {
-					t.Errorf("StartHTTPServer() unexpectable panic occured: %v", err)
+					t.Errorf("StartHTTPServer() unexpectable panic occurred: %v", err)
 				}
 			}()
 			if tt.preRun != nil {

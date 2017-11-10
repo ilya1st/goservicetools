@@ -306,7 +306,7 @@ func TestSetupLog(t *testing.T) {
 						output: "file",
 						// for file logs,console logs: plain|json, excepts syslog
 						format: "plain",
-						// specialy make error
+						// specially make error
 						path: "",
 						rotate: { // right for output=="file"
 							rotate: true,
@@ -436,7 +436,7 @@ func TestSetupSighupRotationForLogs(t *testing.T) {
 						output: "file",
 						// for file logs,console logs: plain|json, excepts syslog
 						format: "plain",
-						// specialy make error
+						// specially make error
 						path: "./logs/test.log",
 						rotate: { // right for output=="file"
 							rotate: true,
@@ -505,7 +505,7 @@ func TestGetSystemLogger(t *testing.T) {
 						output: "file",
 						// for file logs,console logs: plain|json, excepts syslog
 						format: "plain",
-						// specialy make error
+						// specially make error
 						path: "./logs/test.log",
 						rotate: { // right for output=="file"
 							rotate: true,
@@ -573,7 +573,7 @@ func TestGetHTTPLogger(t *testing.T) {
 						output: "file",
 						// for file logs,console logs: plain|json, excepts syslog
 						format: "plain",
-						// specialy make error
+						// specially make error
 						path: "./logs/test.log",
 						rotate: { // right for output=="file"
 							rotate: true,
@@ -677,7 +677,7 @@ func TestCheckLogConfig(t *testing.T) {
 					output: "file",
 					// for file logs,console logs: plain|json, excepts syslog
 					format: "plain",
-					// specialy make error
+					// specially make error
 					path: "./logs/test.log",
 					rotate: { // right for output=="file"
 						rotate: true,
