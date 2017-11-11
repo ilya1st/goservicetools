@@ -2,7 +2,6 @@
 
 [![Build Status](https://travis-ci.org/ilya1st/goservicetools.svg?branch=master)](https://travis-ci.org/ilya1st/goservicetools)[![Go Report Card](https://goreportcard.com/badge/github.com/ilya1st/goservicetools)](https://goreportcard.com/report/github.com/ilya1st/goservicetools)
 
-
 Framework to make service from your application(with different log types, http, suid, graceful restart)
 
 ## Overview
@@ -20,7 +19,7 @@ For example. I want my application to have following things:
     1. Application must support graceful self restart on SIGUSR1 signal with no reopening ports(it must transmit port listener descriptors to new instance)
     1. Things like logfile, pidfile
 
-## Quickstart.
+## Quickstart
 
 To setup your application you must define child struct from IAppStartSetup interface or from DefaultAppStartSetup. On code documentation to IAppStartSetup it's described call order of methods.
 
@@ -53,13 +52,14 @@ func main() {
     goservicetools.AppRun()
 }
 ```
+
 Library contains additional API to work with loggers, configuration files, command line arguments.
 There is examples directory you can see on how to work with library components
 
 ## External libraries used
 
 * github.com/rs/zerolog for logging
-* github.com/ilya1st/rotatewriter to support log rotate on SIGHUP, 
+* github.com/ilya1st/rotatewriter to support log rotate on SIGHUP
 * github.com/ilya1st/configuration-go to support HJSON(json with not strict syntax) to work with configuration files
 * github.com/theckman/go-flock for lock file
 
