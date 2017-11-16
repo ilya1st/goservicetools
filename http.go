@@ -208,7 +208,7 @@ func DropHTTPServer() {
 }
 
 // SetHTTPServeMux sets up server mux
-func SetHTTPServeMux(mux *http.ServeMux) {
+func SetHTTPServeMux(mux http.Handler) {
 	httpServerMutex.Lock()
 	defer httpServerMutex.Unlock()
 	if httpServer == nil {
