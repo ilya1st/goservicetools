@@ -11,6 +11,7 @@ import (
 	"strconv"
 	"sync"
 	"syscall"
+	"time"
 
 	"github.com/theckman/go-flock"
 
@@ -373,7 +374,9 @@ func SetupLog(tag string, config configuration.IConfig) (logger *zerolog.Logger,
 			}
 		}
 		// TODO: numfiles >0  and internal cron for future
-		rwriter, err = rotatewriter.NewRotateWriter(fname, 0)
+		//rwriter, err = rotatewriter.NewRotateWriter(fname, 0)
+		rwriter, err = rotatewriter.NewRotateBufferedWriter(fname, 0, time.Second, 64*1024)
+
 		if err != nil {
 			return nil, fmt.Errorf("Error setup writer %s: %v", tag, err)
 		}
