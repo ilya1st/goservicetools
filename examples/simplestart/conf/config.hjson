@@ -33,7 +33,7 @@
             system:{
                 // typos would be pluggable to make put there extra info
                 // may be stdout, stderr, syslog, file, null  - setup null if you want all to /dev/null
-                output: "file",
+                output: "stderr", // for docker we make that
                 // for file logs,console logs: plain|json|console, excepts syslog
                 format: "plain",
                 path: "./logs/system.log",
@@ -62,7 +62,7 @@
             http:{
                 // typos would be pluggable to make put there extra info
                 // may be stdout, stderr, syslog, file, null  - setup null if you want all to /dev/null
-                output: "file",
+                output: "stdout", // for docker stdout
                 // for file logs,console logs: plain|json, excepts syslog
                 format: "plain",
                 path: "./logs/http.log",
