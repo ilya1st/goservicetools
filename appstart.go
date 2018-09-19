@@ -285,7 +285,7 @@ func AppStart(setup IAppStartSetup) (exitCode int, err error) {
 	GetSystemLogger().Info().Msg("Application starts. System log ready")
 	SetupSighupRotationForLogs()
 	err = appAppStartSetup.SystemSetup(graceful)
-
+	// TODO: add here process name
 	if err != nil {
 		return ExitUserDefinedCodeError, fmt.Errorf(`Error make system initialization while appAppStartSetup.SystemSetup running: %v`, err)
 	}
